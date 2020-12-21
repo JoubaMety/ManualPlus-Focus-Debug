@@ -1,0 +1,39 @@
+###########
+## NAMES ##
+###########
+
+option.x=Maximum Focus Distance
+option.transparency=Overlay Transparency
+option.bluesize=Size of Focus Plane
+
+option.farplaneR=Far Plane §cR
+option.farplaneG=Far Plane §aG
+option.farplaneB=Far Plane §9B
+
+option.nearplaneR=Near Plane §cR
+option.nearplaneG=Near Plane §aG
+option.nearplaneB=Near Plane §9B 
+
+option.focuspointR=Focus Plane §cR 
+option.focuspointG=Focus Plane §aG
+option.focuspointB=Focus Plane §9B
+
+##################
+## DESCRIPTIONS ##
+##################
+
+option.x.comment=Defines how far will focus point go.
+option.transparency.comment=Defines how transparent overlay will be.
+option.bluesize.comment=Defines how big will focus plane be. §cNote: Focus Plane gets exponentially bigger, the farther it is.
+
+option.farplaneR.comment=Defines amount of §cRED in Far Plane.
+option.farplaneG.comment=Defines amount of §aGREEN in Far Plane.
+option.farplaneB.comment=Defines amount of §9BLUE in Far Plane.
+
+option.nearplaneR.comment=Defines amount of §cRED in Near Plane.
+option.nearplaneG.comment=Defines amount of §aGREEN in Near Plane.
+option.nearplaneB.comment=Defines amount of §9BLUE in Near Plane.
+
+option.focuspointR.comment=Defines amount of §cRED in Focus Plane.
+option.focuspointG.comment=Defines amount of §aGREEN in Focus Plane.
+option.focuspointB.comment=Defines amount of §9BLUE in Focus Plane.
