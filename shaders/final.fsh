@@ -16,6 +16,10 @@
 #define focuspointG 0.0// [0.0 0.033 0.066 0.1 0.133 0.166 0.2 0.233 0.266 0.3 0.333 0.366 0.4 0.433 0.466 0.5 0.533 0.566 0.6 0.633 0.666 0.7 0.733 0.766 0.8 0.833 0.866 0.9 0.933 0.966 1.0]
 #define focuspointB 1.0 // [0.0 0.033 0.066 0.1 0.133 0.166 0.2 0.233 0.266 0.3 0.333 0.366 0.4 0.433 0.466 0.5 0.533 0.566 0.6 0.633 0.666 0.7 0.733 0.766 0.8 0.833 0.866 0.9 0.933 0.966 1.0]
 
+#define NEARPLANE
+#define FARPLANE
+#define FOCUSPLANE
+
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
 
@@ -26,26 +30,51 @@ uniform float near;
 uniform float screenBrightness;
 
 void main() {
+
     vec3 color = texture2D(colortex0, texcoord).rgb;
     vec3 depth = texture2D(depthtex0, texcoord).rgb;
-    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));  
     vec3 overlay;
+
+    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));
+
+    float bluesizef;
+    #ifdef FOCUSPLANE
+          bluesizef = bluesize;
+    #else
+          bluesizef = 0.;
+    #endif
 
     if (depth.z < near || far > 0 && depth.z > far) {
         overlay = overlay; }
+
     else {
-        if (abs(focus) < (depth.z - bluesize))
-        overlay = vec3(farplaneR, farplaneG, farplaneB);
 
-        if (abs(focus) > (depth.z + bluesize))
-        overlay = vec3(nearplaneR,nearplaneG,nearplaneB);
+        #ifdef FARPLANE
+            if (abs(focus) < (depth.z - bluesizef))
+            overlay = vec3(farplaneR, farplaneG, farplaneB);
+        #else
+            if (abs(focus) < (depth.z - bluesizef))
+            overlay = vec3(0.);
+        #endif
 
-        if (abs(focus) < (depth.z + bluesize) && abs(focus) > (depth.z - bluesize))
-        overlay += vec3(focuspointR,focuspointG,focuspointB);
+        #ifdef NEARPLANE
+            if (abs(focus) > (depth.z + bluesizef))
+            overlay = vec3(nearplaneR,nearplaneG,nearplaneB);
+        #else
+            if (abs(focus) > (depth.z + bluesizef))
+            overlay = vec3(0.);
+        #endif
+
+        #ifdef FOCUSPLANE
+            if (abs(focus) < (depth.z + bluesizef) && abs(focus) > (depth.z - bluesizef))
+            overlay += vec3(focuspointR,focuspointG,focuspointB);
+        #endif
+
     }
 
     color = mix(color,overlay,transparency);
 
-/* DRAWBUFFERS:0 */
+        /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4(color, 1.0);
+
 }
