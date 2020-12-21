@@ -33,10 +33,9 @@ void main() {
 
     vec3 color = texture2D(colortex0, texcoord).rgb;
     vec3 depth = texture2D(depthtex0, texcoord).rgb;
-    vec3 overlay;
 
-    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));
-
+    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near))
+    
     float bluesizef;
     #ifdef FOCUSPLANE
           bluesizef = bluesize;
@@ -44,33 +43,27 @@ void main() {
           bluesizef = 0.;
     #endif
 
-    if (depth.z < near || far > 0 && depth.z > far) {
-        overlay = overlay; }
+    vec3 overlay;
+    #ifdef FARPLANE
+         if (abs(focus) < (depth.z - bluesizef))
+         overlay = vec3(farplaneR, farplaneG, farplaneB);
+    #else
+         if (abs(focus) < (depth.z - bluesizef))
+         overlay = vec3(0.);
+    #endif
 
-    else {
+    #ifdef NEARPLANE
+         if (abs(focus) > (depth.z + bluesizef))
+         overlay = vec3(nearplaneR,nearplaneG,nearplaneB);
+    #else
+         if (abs(focus) > (depth.z + bluesizef))
+         overlay = vec3(0.);
+    #endif
 
-        #ifdef FARPLANE
-            if (abs(focus) < (depth.z - bluesizef))
-            overlay = vec3(farplaneR, farplaneG, farplaneB);
-        #else
-            if (abs(focus) < (depth.z - bluesizef))
-            overlay = vec3(0.);
-        #endif
-
-        #ifdef NEARPLANE
-            if (abs(focus) > (depth.z + bluesizef))
-            overlay = vec3(nearplaneR,nearplaneG,nearplaneB);
-        #else
-            if (abs(focus) > (depth.z + bluesizef))
-            overlay = vec3(0.);
-        #endif
-
-        #ifdef FOCUSPLANE
-            if (abs(focus) < (depth.z + bluesizef) && abs(focus) > (depth.z - bluesizef))
-            overlay += vec3(focuspointR,focuspointG,focuspointB);
-        #endif
-
-    }
+    #ifdef FOCUSPLANE
+         if (abs(focus) < (depth.z + bluesizef) && abs(focus) > (depth.z - bluesizef))
+         overlay += vec3(focuspointR,focuspointG,focuspointB);
+    #endif
 
     color = mix(color,overlay,transparency);
 
