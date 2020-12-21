@@ -25,17 +25,21 @@ uniform sampler2D depthtex0;
 
 varying vec2 texcoord;
 
+/* Required uniforms for Manual+ Focus */
 uniform float far;
 uniform float near;
 uniform float screenBrightness;
 
 void main() {
 
-    vec3 color = texture2D(colortex0, texcoord).rgb;
-    vec3 depth = texture2D(depthtex0, texcoord).rgb;
+    /* COLOR AND DEPTH */
+    vec3 color = texture2D(colortex0, texcoord).rgb; // Color buffer
+    vec3 depth = texture2D(depthtex0, texcoord).rgb; // Depth buffer
 
-    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near))
+    /* MANUAL+ FOCUS FUNCTION */
+    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));
     
+    /* FOCUS PLANE SIZE */
     float bluesizef;
     #ifdef FOCUSPLANE
           bluesizef = bluesize;
@@ -43,6 +47,7 @@ void main() {
           bluesizef = 0.;
     #endif
 
+    /* MANUAL+ FOCUS VISUALISER */
     vec3 overlay;
     #ifdef FARPLANE
          if (abs(focus) < (depth.z - bluesizef))
@@ -65,9 +70,11 @@ void main() {
          overlay += vec3(focuspointR,focuspointG,focuspointB);
     #endif
 
+    /* MIXER */
     color = mix(color,overlay,transparency);
 
-        /* DRAWBUFFERS:0 */
+    /* OUTPUT */
+    /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4(color, 1.0);
 
 }
