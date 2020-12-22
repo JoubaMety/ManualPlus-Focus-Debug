@@ -20,6 +20,8 @@
 #define FARPLANE
 #define FOCUSPLANE
 
+//#define contimodded_2_1_mode
+
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
 
@@ -37,8 +39,12 @@ void main() {
     vec3 depth = texture2D(depthtex0, texcoord).rgb; // Depth buffer
 
     /* MANUAL+ FOCUS FUNCTION */
-    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));
     
+    float focus = (far * ((screenBrightness * x) - near)) / ((screenBrightness * x) * (far - near));
+    #ifdef contimodded_2_1_mode
+          focus = (far * ((1+((x - 1) * screenBrightness)) - near)) / ((1+((x - 1) * screenBrightness)) * (far - near));
+    #endif
+
     /* FOCUS PLANE SIZE */
     float bluesizef;
     #ifdef FOCUSPLANE
